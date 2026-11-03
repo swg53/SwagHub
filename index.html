@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>璇峰亣</title>
+    <title>请假</title>
     <style>
         :root {
             --bg-color: #f7f8fa;
@@ -21,22 +21,22 @@
             padding-bottom: 100px;
             color: var(--text-main);
             -webkit-font-smoothing: antialiased;
-            /* 澧炲姞鍏ㄥ眬琛岃窛涓庡瓧闂磋窛 */
+            /* 增加全局行距与字间距 */
             line-height: 1.5;
             letter-spacing: 0.5px;
         }
 
-        /* 椤堕儴瀵艰埅 */
+        /* 顶部导航 */
         .nav-bar { 
             background: #fff; height: 46px; display: flex; align-items: center; justify-content: center; 
             font-size: 17px; font-weight: 500; border-bottom: 1px solid var(--line-color);
             position: sticky; top: 0; z-index: 100;
         }
 
-        /* 鏉垮潡锛氶€氳繃 margin-top 鎾戝紑鐏拌壊绌洪殭 */
+        /* 板块：通过 margin-top 撑开灰色空隙 */
         .section { background: #fff; margin-top: 10px; position: relative; }
         
-        /* 灏忔爣棰橈細鍘绘帀绮椾綋锛屽姞缁嗘í绾?*/
+        /* 小标题：去掉粗体，加细横线 */
         .section-title { 
             padding: 16px 16px 10px; 
             font-size: 15px; 
@@ -46,27 +46,27 @@
             border-bottom: 1px solid var(--line-color); 
         }
 
-        /* 鍗曞厓鏍煎竷灞€ */
+        /* 单元格布局 */
         .cell { display: flex; padding: 12px 16px; font-size: 14px; line-height: 1.4; align-items: flex-start;}
         
         .cell-label { width: 105px; color: var(--text-sub); flex-shrink: 0; }
         
-        /* 寮哄埗鍙充晶鏂囧瓧涓烘繁榛戣壊 */
+        /* 强制右侧文字为深黑色 */
         .cell-value { flex: 1; color: #323233 !important; word-break: break-all; text-align:left; }
 
-        /* 杈撳叆妗嗘牱寮?*/
+        /* 输入框样式 */
         input { 
             border: none; outline: none; background: transparent; width: 100%; 
             color: #323233 !important; font: inherit; padding:0; text-align:left;
-            -webkit-text-fill-color: #323233; /* 鍏煎 iOS */
+            -webkit-text-fill-color: #323233; /* 兼容 iOS */
             opacity: 1;
-            /* 闃叉鎵嬫満涓婅仛鐒︽椂寮瑰嚭绯荤粺閿洏銆佸埛鍑哄厜鏍?鏀惧ぇ闀?*/
+            /* 防止手机上聚焦时弹出系统键盘、刷出光标/放大镜 */
             caret-color: transparent;
             -webkit-user-select: none;
             user-select: none;
             -webkit-touch-callout: none;
         }
-        /* 鏃堕棿/鏃ユ湡/閫夐」杩欏嚑绉嶈蛋婊氳疆閫夋嫨锛屽交搴曟柇鎺夐敭鐩樿緭鍏?*/
+        /* 时间/日期/选项这几种走滚轮选择，彻底断掉键盘输入 */
         .cell-value[data-picker] input {
             pointer-events: none;
             -webkit-user-select: none;
@@ -74,7 +74,7 @@
             caret-color: transparent;
         }
 
-        /* 璇佹槑鏉愭枡闄勪欢鍖哄煙 */
+        /* 证明材料附件区域 */
         .attachment-upload { display: block; cursor: pointer; }
         .attachment-upload:active { opacity: 0.6; }
 
@@ -94,7 +94,7 @@
             border: 1px solid #ebedf0;
         }
 
-        /* 瀹℃牳娴佺▼ */
+        /* 审核流程 */
         .steps-container { background: #fff; padding: 15px 0; }
         .step-item { display: flex; position: relative; min-height: 50px; }
         .step-left { 
@@ -114,12 +114,12 @@
         .check-circle svg { width: 12px; height: 12px; fill: none; stroke: white; stroke-width: 3; }
         .step-right { flex: 1; padding-left: 10px; font-size: 14px; line-height: 1.4; color: var(--text-main); }
 
-        /* 搴曢儴鎸夐挳 */
+        /* 底部按钮 */
         .footer { position: fixed; bottom: 0; width: 100%; height: 50px; display: flex; background: #fff; border-top: 1px solid #eee; z-index: 100; }
         .footer button { flex: 1; border: none; font-size: 16px; background: #fff; color: var(--cyan-main); }
         .btn-right { background: var(--cyan-main) !important; color: #fff !important; }
 
-        /* ============ 鏂板锛?04 鎻愮ず锛堝唴宓屽湪鏈〉锛屼笉璺宠浆澶栭儴椤甸潰锛?============ */
+        /* ============ 新增：404 提示（内嵌在本页，不跳转外部页面） ============ */
         .nf-mask {
             position: fixed; inset: 0; z-index: 400;
             background: rgba(0, 0, 0, 0.45);
@@ -147,9 +147,9 @@
             font-size: 16px; cursor: pointer;
         }
 
-        /* 妯″紡鍒囨崲鎸夐挳 */
+        /* 模式切换按钮 */
         #mode-btn { position: fixed; right: 15px; bottom: 70px; background: rgba(0,0,0,0.6); color: #fff; border: none; padding: 8px 12px; border-radius: 4px; font-size: 12px; z-index: 200; }
-        /* 缂栬緫鍏ュ彛榛樿涓嶆樉绀猴紝闀挎寜鈥滃畾浣嶉攢鍋団€濆悗鎵嶅嚭鐜帮紱鏂瑰潡鏈韩涓嶅甫鏂囧瓧 */
+        /* 编辑入口默认不显示，长按“定位销假”后才出现；方块本身不带文字 */
         #mode-btn[hidden] { display: none; }
         #mode-btn {
             width: 26px; height: 26px; padding: 0;
@@ -157,7 +157,7 @@
             -webkit-tap-highlight-color: transparent;
             transition: opacity .2s ease;
         }
-        /* 杩涘叆缂栬緫鍚庨粦鍧楀父椹伙紝骞舵樉绀衡€滈瑙堚€濅簩瀛?*/
+        /* 进入编辑后黑块常驻，并显示“预览”二字 */
         #mode-btn.with-label {
             width: auto; min-width: 52px; height: 26px;
             padding: 0 10px;
@@ -167,9 +167,21 @@
         .preview-mode input { pointer-events: none; }
         .edit-mode input { border-bottom: 1px dashed var(--cyan-main); }
 
-        /* ============ 浠ヤ笅涓烘柊澧烇細鏃堕棿婊氬姩閫夋嫨鍣?& 鏃ユ湡鍙紪杈戞牱寮?============ */
+        /* 只读字段：编辑模式下也不画蓝色虚线，没有光标和点击热区 */
+        .cell-value.readonly-cell {
+            pointer-events: none;
+            cursor: default;
+        }
+        .edit-mode .cell-value.readonly-cell input,
+        .edit-mode .cell-value.readonly-cell .picker-text {
+            border-bottom: 1px dashed transparent !important;
+            color: var(--text-main) !important;
+        }
+        .cell-value.readonly-cell::after { display: none !important; }
 
-        /* 鏃ユ湡/鏃堕棿鍗曞厓鏍硷細鍋氭垚鍙偣鍑荤殑鏍峰瓙 */
+        /* ============ 以下为新增：时间滚动选择器 & 日期可编辑样式 ============ */
+
+        /* 日期/时间单元格：做成可点击的样子 */
         .cell-value.has-picker { cursor: pointer; }
         .cell-value.has-picker .picker-text {
             display: inline-block;
@@ -179,9 +191,9 @@
         .edit-mode .cell-value.has-picker .picker-text { border-bottom: 1px dashed var(--cyan-main); }
         .edit-mode .cell-value.has-picker .picker-text.empty { color: var(--text-sub) !important; }
         .cell-value.has-picker:active { opacity: 0.55; }
-        /* 鍙充晶灏忕澶达紝鏆楃ず鍙互鐐瑰紑閫夋嫨 */
+        /* 右侧小箭头，暗示可以点开选择 */
         .cell-value.has-picker::after {
-            content: "鈥?;
+            content: "›";
             float: right;
             color: var(--text-sub);
             font-size: 16px;
@@ -189,10 +201,10 @@
             transform: rotate(90deg);
             opacity: .55;
         }
-        /* 棰勮妯″紡涓嬪氨涓嶆樉绀虹澶?*/
+        /* 预览模式下就不显示箭头 */
         .preview-mode .cell-value.has-picker::after { display: none; }
 
-        /* 閫夋嫨鍣ㄩ伄缃?*/
+        /* 选择器遮罩 */
         .picker-mask {
             position: fixed; left: 0; right: 0; top: 0; bottom: 0;
             background: rgba(0, 0, 0, .45);
@@ -203,7 +215,7 @@
         }
         .picker-mask.show { opacity: 1; pointer-events: auto; }
 
-        /* 閫夋嫨鍣ㄩ潰鏉?*/
+        /* 选择器面板 */
         .picker-panel {
             width: 100%;
             max-width: 640px;
@@ -233,7 +245,7 @@
 
         .picker-body { position: relative; height: 220px; }
 
-        /* 閫変腑楂樹寒鏉★紙涓棿閭ｄ竴琛岋級 */
+        /* 选中高亮条（中间那一行） */
         .picker-indicator {
             position: absolute; left: 16px; right: 16px; top: 88px; height: 44px;
             border-top: 1px solid var(--line-color);
@@ -241,7 +253,7 @@
             pointer-events: none; z-index: 1;
         }
 
-        /* 婊氳疆瀹瑰櫒 */
+        /* 滚轮容器 */
         .picker-columns { display: flex; height: 100%; position: relative; z-index: 2; }
         .picker-col {
             flex: 1; height: 100%; overflow-y: scroll;
@@ -252,7 +264,7 @@
         }
         .picker-col::-webkit-scrollbar { display: none; }
 
-        /* 姣忎釜閫夐」 44px 楂橈紝涓棿鐣?88px 涓婁笅绌虹櫧璁╅灏句篃鑳芥粴鍒颁腑闂?*/
+        /* 每个选项 44px 高，中间留 88px 上下空白让首尾也能滚到中间 */
         .picker-col .item {
             height: 44px; line-height: 44px;
             text-align: center;
@@ -264,19 +276,19 @@
         }
         .picker-col .item.dim { color: var(--text-sub); }
 
-        /* 閫夋嫨鍣ㄦ嫋鎷芥湡闂寸鎺夐〉闈㈡粴鍔?*/
+        /* 选择器拖拽期间禁掉页面滚动 */
         body.picker-open { overflow: hidden; }
 
-        /* ============ 鏂板锛氳嚜鍔ㄨ绠楀瓧娈?& 鍙紪杈戝鏍镐汉 & 閫夐」婊氳疆 ============ */
+        /* ============ 新增：自动计算字段 & 可编辑审核人 & 选项滚轮 ============ */
 
-        /* 璇峰亣澶╂暟鐢卞紑濮?缁撴潫鏃堕棿鑷姩绠楀嚭锛屼笉缁欐墜鏀?*/
+        /* 请假天数由开始/结束时间自动算出，不给手改 */
         input.readonly { color: #323233 !important; pointer-events: none; }
         .preview-mode input.readonly { pointer-events: none; }
 
-        /* 瀹℃牳娴佺▼閲岀殑鐏拌壊鏃堕棿锛氬彧璇诲睍绀猴紝涓嶅啀鐐瑰嚮缂栬緫 */
+        /* 审核流程里的灰色时间：只读展示，不再点击编辑 */
         .cell-time.readonly-time { pointer-events: none; color: var(--text-sub); }
 
-        /* 鈥滃鏍镐汉锛氣€濆悗闈㈢殑琛屽唴杈撳叆妗嗭紝闀垮害鑷€傚簲锛屼繚鎸佸拰鍘熸枃瀛楀悓鑹插悓瀛楀彿 */
+        /* “审核人：”后面的行内输入框，长度自适应，保持和原文字同色同字号 */
         input.inline-input {
             display: inline-block;
             width: auto;
@@ -292,7 +304,7 @@
         .preview-mode input.inline-input { pointer-events: none; }
         .edit-mode input.inline-input { border-bottom: 1px dashed var(--cyan-main); }
 
-        /* 閫夐」鍨嬫粴杞彧鏈変竴鍒楋紝灞呬腑骞堕€傚綋鏀剁獎锛岄伩鍏嶆枃瀛楀お闀胯创杈?*/
+        /* 选项型滚轮只有一列，居中并适当收窄，避免文字太长贴边 */
         .picker-columns.single .picker-col { flex: 0 0 78%; margin: 0 auto; }
     </style>
 </head>
@@ -300,25 +312,25 @@
 
 <button id="mode-btn" onclick="toggleMode()" hidden></button>
 <div class="section">
-    <div class="section-title">鍘诲悜淇℃伅</div>
-    <div class="cell"><div class="cell-label">鏄惁鍑烘牎</div><div class="cell-value" data-picker="option" data-options="yesno"><input type="text" value="鏄?></div></div>
-    <div class="cell"><div class="cell-label">鏄惁绂诲紑瀛︽牎鎵€鍦ㄥ湴</div><div class="cell-value" data-picker="option" data-options="yesno"><input type="text" value="鍚?></div></div>
+    <div class="section-title">去向信息</div>
+    <div class="cell"><div class="cell-label">是否出校</div><div class="cell-value" data-picker="option" data-options="yesno"><input type="text" value="是"></div></div>
+    <div class="cell"><div class="cell-label">是否离开学校所在地</div><div class="cell-value" data-picker="option" data-options="yesno"><input type="text" value="否"></div></div>
 </div>
 
 <div class="section">
-    <div class="section-title">璇峰亣淇℃伅</div>
-    <div class="cell"><div class="cell-label">瀛﹀勾</div><div class="cell-value" data-picker="option" data-options="year"><input type="text" value="2026-2027瀛﹀勾"></div></div>
-    <div class="cell"><div class="cell-label">瀛︽湡</div><div class="cell-value"><input type="text" value="绗簩瀛︽湡"></div></div>
-    <div class="cell"><div class="cell-label">璇峰亣绫诲瀷</div><div class="cell-value" data-picker="option" data-options="leaveType"><input type="text" value="浜嬪亣"></div></div>
-    <div class="cell"><div class="cell-label">璇峰亣鎬ц川</div><div class="cell-value" data-picker="option" data-options="leaveNature"><input type="text" value="鍥犵璇峰亣"></div></div>
-    <div class="cell"><div class="cell-label">鐢宠鏃ユ湡</div><div class="cell-value" data-picker="datetime"><input type="text" id="apply-time" value="2026-04-22 05:00"></div></div>
-    <div class="cell"><div class="cell-label">璇峰亣寮€濮嬫棩鏈?/div><div class="cell-value" data-picker="datetime"><input type="text" id="start-time" value="2026-04-22 08:00"></div></div>
-    <div class="cell"><div class="cell-label">璇峰亣缁撴潫鏃ユ湡</div><div class="cell-value" data-picker="datetime"><input type="text" id="end-time" value="2026-04-22 17:40"></div></div>
-    <div class="cell"><div class="cell-label">璇峰亣澶╂暟</div><div class="cell-value"><input type="text" id="leave-days" value="0.40" readonly class="readonly"></div></div>
-    <div class="cell"><div class="cell-label">鏉ユ簮绫诲瀷</div><div class="cell-value"><input type="text" value="瀛︾敓鐢宠"></div></div>
-    <div class="cell"><div class="cell-label">璇峰亣浜嬬敱</div><div class="cell-value"><input type="text" value="鍙傚姞鏈嬪弸鐢熸棩鑱氫細"></div></div>
+    <div class="section-title">请假信息</div>
+    <div class="cell"><div class="cell-label">学年</div><div class="cell-value" data-picker="option" data-options="year"><input type="text" value="2026-2027学年"></div></div>
+    <div class="cell"><div class="cell-label">学期</div><div class="cell-value"><input type="text" value="第二学期"></div></div>
+    <div class="cell"><div class="cell-label">请假类型</div><div class="cell-value" data-picker="option" data-options="leaveType"><input type="text" value="事假"></div></div>
+    <div class="cell"><div class="cell-label">请假性质</div><div class="cell-value" data-picker="option" data-options="leaveNature"><input type="text" value="因私请假"></div></div>
+    <div class="cell"><div class="cell-label">申请日期</div><div class="cell-value readonly-cell"><input type="text" id="apply-time" value="2026-04-22 05:00" readonly class="readonly"></div></div>
+    <div class="cell"><div class="cell-label">请假开始日期</div><div class="cell-value" data-picker="datetime"><input type="text" id="start-time" value="2026-04-22 08:00"></div></div>
+    <div class="cell"><div class="cell-label">请假结束日期</div><div class="cell-value" data-picker="datetime"><input type="text" id="end-time" value="2026-04-22 17:40"></div></div>
+    <div class="cell"><div class="cell-label">请假天数</div><div class="cell-value"><input type="text" id="leave-days" value="0.40" readonly class="readonly"></div></div>
+    <div class="cell"><div class="cell-label">来源类型</div><div class="cell-value"><input type="text" value="学生申请"></div></div>
+    <div class="cell"><div class="cell-label">请假事由</div><div class="cell-value"><input type="text" value="参加朋友生日聚会"></div></div>
     
-    <div class="cell" style="padding-bottom:0;"><div class="cell-label">璇佹槑鏉愭枡 (1/9)</div></div>
+    <div class="cell" style="padding-bottom:0;"><div class="cell-label">证明材料 (1/9)</div></div>
     <label class="attachment-upload" for="file-input">
         <input type="file" id="file-input" style="display: none;" onchange="handleFile(this)">
         <div class="attachment-box">
@@ -333,22 +345,22 @@
     </label>
     
     <div class="cell">
-        <div class="cell-label">鎵嬫満鍙?/div>
+        <div class="cell-label">手机号</div>
         <div class="cell-value"><input type="text" id="phone" value="19908652296" inputmode="numeric" maxlength="11"></div>
     </div>
 </div>
 
 <div class="section">
-    <div class="section-title">閿€鍋囦俊鎭?/div>
-    <div class="cell"><div class="cell-label">閿€鍋囩姸鎬?/div><div class="cell-value" ><input type="text" value="鏈攢鍋?></div></div>
-    <div class="cell"><div class="cell-label">閿€鍋囩被鍨?/div><div class="cell-value"><input type="text" value=""></div></div>
-    <div class="cell"><div class="cell-label">閿€鍋囨棩鏈?/div><div class="cell-value" data-picker="datetime" data-optional="1"><input type="text" value=""></div></div>
-    <div class="cell"><div class="cell-label">閿€鍋囦汉</div><div class="cell-value"><input type="text" value=""></div></div>
-    <div class="cell"><div class="cell-label">閿€鍋囪鏄?/div><div class="cell-value"><input type="text" value=""></div></div>
+    <div class="section-title">销假信息</div>
+    <div class="cell"><div class="cell-label">销假状态</div><div class="cell-value readonly-cell"><input type="text" value="未销假" readonly class="readonly"></div></div>
+    <div class="cell"><div class="cell-label">销假类型</div><div class="cell-value readonly-cell"><input type="text" value="" readonly class="readonly"></div></div>
+    <div class="cell"><div class="cell-label">销假日期</div><div class="cell-value readonly-cell"><input type="text" value="" readonly class="readonly"></div></div>
+    <div class="cell"><div class="cell-label">销假人</div><div class="cell-value readonly-cell"><input type="text" value="" readonly class="readonly"></div></div>
+    <div class="cell"><div class="cell-label">销假说明</div><div class="cell-value readonly-cell"><input type="text" value="" readonly class="readonly"></div></div>
 </div>
 
 <div class="section">
-    <div class="section-title">瀹℃牳娴佺▼</div>
+    <div class="section-title">审核流程</div>
     <div class="steps-container">
         <div class="step-item">
             <div class="step-left">
@@ -358,7 +370,7 @@
                 <div class="check-circle"><svg viewBox="0 0 24 24"><path d="M20 6L9 17L4 12"></path></svg></div>
                 <div class="step-line"></div>
             </div>
-            <div class="step-right"> <span style="color:var(--text-sub); ">鎻愪氦鐢宠</span></div>
+            <div class="step-right"> <span style="color:var(--text-sub); ">提交申请</span></div>
         </div>
         <div class="step-item">
             <div class="step-left">
@@ -369,10 +381,10 @@
                 <div class="step-line"></div>
             </div>
             <div class="step-right">
-                <span style="color:var(--text-sub); ">杈呭鍛樺鏍?/span><br>
-                <span style="color:var(--text-sub); font-size:13px">閫氳繃</span><br>
-                <span style="color:var(--text-sub); font-size:13px">瀹℃牳浜猴細<input type="text" id="reviewer" class="inline-input" value="浣曢敠瑁?></span><br>
-                <span style="color:var(--text-sub); font-size:13px">瀹℃牳鎰忚锛氶€氳繃</span>
+                <span style="color:var(--text-sub); ">辅导员审核</span><br>
+                <span style="color:var(--text-sub); font-size:13px">通过</span><br>
+                <span style="color:var(--text-sub); font-size:13px">审核人：<input type="text" id="reviewer" class="inline-input" value="何锦裕"></span><br>
+                <span style="color:var(--text-sub); font-size:13px">审核意见：通过</span>
             </div>
         </div>
         <div class="step-item">
@@ -380,33 +392,33 @@
             <div class="step-icon-column">
                 <div class="check-circle"><svg viewBox="0 0 24 24"><path d="M20 6L9 17L4 12"></path></svg></div>
             </div>
-            <div class="step-right" style="padding-top:2px"><span style="color:var(--text-sub); ">缁撴潫</span></div>
+            <div class="step-right" style="padding-top:2px"><span style="color:var(--text-sub); ">结束</span></div>
         </div>
     </div>
 </div>
 
 <div class="footer">
-    <button id="locate-btn" type="button">瀹氫綅閿€鍋?/button>
-    <button class="btn-right" id="renew-btn" type="button">缁亣鐢宠</button>
+    <button id="locate-btn" type="button">定位销假</button>
+    <button class="btn-right" id="renew-btn" type="button">续假申请</button>
 </div>
 
-<!-- ============ 鏂板锛?04 鎻愮ず灞傦紙鐐瑰嚮鈥滃畾浣嶉攢鍋?/ 缁亣鐢宠鈥濇椂寮瑰嚭锛屼笉璺宠浆锛?============ -->
+<!-- ============ 新增：404 提示层（点击“定位销假 / 续假申请”时弹出，不跳转） ============ -->
 <div class="nf-mask" id="nf-mask">
     <div class="nf-panel" onclick="event.stopPropagation()">
         <div class="nf-code">404</div>
-        <div class="nf-title" id="nf-title">椤甸潰涓嶅瓨鍦?/div>
-        <div class="nf-desc" id="nf-desc">褰撳墠鍔熻兘鏆傛湭寮€鏀?/div>
-        <button class="nf-btn" id="nf-ok" type="button">杩斿洖椤甸潰</button>
+        <div class="nf-title" id="nf-title">页面不存在</div>
+        <div class="nf-desc" id="nf-desc">当前功能暂未开放</div>
+        <button class="nf-btn" id="nf-ok" type="button">返回页面</button>
     </div>
 </div>
 
-<!-- ============ 鏂板锛氭椂闂存粴鍔ㄩ€夋嫨鍣?============ -->
+<!-- ============ 新增：时间滚动选择器 ============ -->
 <div class="picker-mask" id="picker-mask">
     <div class="picker-panel" onclick="event.stopPropagation()">
         <div class="picker-header">
-            <button id="picker-cancel" type="button">鍙栨秷</button>
-            <div class="picker-title" id="picker-title">閫夋嫨鏃堕棿</div>
-            <button id="picker-confirm" type="button">纭畾</button>
+            <button id="picker-cancel" type="button">取消</button>
+            <div class="picker-title" id="picker-title">选择时间</div>
+            <button id="picker-confirm" type="button">确定</button>
         </div>
         <div class="picker-body">
             <div class="picker-indicator"></div>
@@ -416,17 +428,19 @@
 </div>
 
 <script>
-    /* ================= 鍘熸湁閫昏緫 ================= */
+    /* ================= 原有逻辑 ================= */
     function updateModeBtn() {
         const isEdit = document.body.classList.contains('edit-mode');
         const btn = document.getElementById('mode-btn');
-        // 棰勮鎬佸叆鍙ｆ槸涓棤瀛楀皬榛戝潡锛涜繘鍏ョ紪杈戝悗甯︹€滈瑙堚€濅簩瀛楋紝鐐瑰畠鍥炲埌棰勮骞舵敹璧?        btn.textContent = isEdit ? '棰勮' : '';
-        btn.title = isEdit ? '棰勮妯″紡' : '缂栬緫妯″紡';
+        // 预览态入口是个无字小黑块；进入编辑后带“预览”二字，点它回到预览并收起
+        btn.textContent = isEdit ? '预览' : '';
+        btn.title = isEdit ? '预览模式' : '编辑模式';
         btn.classList.toggle('with-label', isEdit);
     }
 
     function toggleMode() {
-        // 榛戝潡锛堚€滈瑙堚€濓級鍜屽弻鍑烩€滃畾浣嶉攢鍋団€濊蛋鍚屼竴濂楀紑鍏?        if (document.body.classList.contains('edit-mode')) exitEdit(); else enterEdit();
+        // 黑块（“预览”）和双击“定位销假”走同一套开关
+        if (document.body.classList.contains('edit-mode')) exitEdit(); else enterEdit();
     }
 
     function handleFile(input) {
@@ -442,11 +456,18 @@
         }
     }
 
-    /* ================= 鏂板锛氭椂闂存粴鍔ㄩ€夋嫨鍣?=================
-       鐢ㄦ硶锛?         1) 椤甸潰閲屼换鎰忓厓绱犲姞 data-picker="datetime"锛堟垨 "date" / "time"锛夛紝
-            鐐瑰畠灏变細寮瑰嚭涓棿閭ｈ楂樹寒鐨勬粴杞€夋嫨鍣ㄣ€?         2) 甯?data-picker 鐨?.cell-value 閲屾湁 <input> 鏃讹紝閫変腑缁撴灉鑷姩鍐欏洖 input锛?            娌℃湁 input 鏃讹紝鍐欏洖 .date-line / .time-line 涓や釜 span銆?         3) data-optional="1" 琛ㄧず鍏佽娓呯┖锛堝鈥滈攢鍋囨棩鏈熲€濓級銆?         4) 涔熷彲浠ュ湪鍒鎵嬪姩璋冪敤 openPicker(dateObj, {mode, title, onConfirm, allowEmpty})銆?    ========================================================= */
+    /* ================= 新增：时间滚动选择器 =================
+       用法：
+         1) 页面里任意元素加 data-picker="datetime"（或 "date" / "time"），
+            点它就会弹出中间那行高亮的滚轮选择器。
+         2) 带 data-picker 的 .cell-value 里有 <input> 时，选中结果自动写回 input；
+            没有 input 时，写回 .date-line / .time-line 两个 span。
+         3) data-optional="1" 表示允许清空（如“销假日期”）。
+         4) 也可以在别处手动调用 openPicker(dateObj, {mode, title, onConfirm, allowEmpty})。
+    ========================================================= */
 
-    const ITEM_H = 44;            // 姣忎釜閫夐」楂樺害锛屽拰 CSS .item 鐨?height 淇濇寔涓€鑷?    const HOURS = Array.from({length: 24}, (_, i) => String(i).padStart(2, '0'));
+    const ITEM_H = 44;            // 每个选项高度，和 CSS .item 的 height 保持一致
+    const HOURS = Array.from({length: 24}, (_, i) => String(i).padStart(2, '0'));
     const MINUTES = Array.from({length: 60}, (_, i) => String(i).padStart(2, '0'));
 
     const pickerMask = document.getElementById('picker-mask');
@@ -456,19 +477,20 @@
     const pickerConfirm = document.getElementById('picker-confirm');
 
     let pickerState = null;       // { mode, onConfirm, allowEmpty, cols, value, target }
-    let opening = false;          // 闃叉鎵撳紑鍔ㄧ敾鏈熼棿琚鐐瑰叧闂?
-    /* ---------- 宸ュ叿鍑芥暟 ---------- */
+    let opening = false;          // 防止打开动画期间被误点关闭
+
+    /* ---------- 工具函数 ---------- */
     function pad2(n) { return String(n).padStart(2, '0'); }
 
     function daysInMonth(y, m) { return new Date(y, m, 0).getDate(); } // m: 1-12
 
-    // "2026-04-22 08:00" / "2026-04-22 8:00:30" / "2026-04-22" / "08:00" 閮借兘瑙ｆ瀽
+    // "2026-04-22 08:00" / "2026-04-22 8:00:30" / "2026-04-22" / "08:00" 都能解析
     function parseDateTime(str, mode, fallback) {
         const now = new Date();
         let y = now.getFullYear(), mo = now.getMonth() + 1, d = now.getDate();
         let h = now.getHours(), mi = now.getMinutes();
         if (str) {
-            var mDate = str.match(/(\d{4})\s*[-\/骞碷\s*(\d{1,2})\s*[-\/鏈圿\s*(\d{1,2})/);
+            var mDate = str.match(/(\d{4})\s*[-\/年]\s*(\d{1,2})\s*[-\/月]\s*(\d{1,2})/);
             if (mDate) { y = +mDate[1]; mo = +mDate[2]; d = +mDate[3]; }
             var mTime = str.match(/(\d{1,2})\s*:\s*(\d{1,2})/);
             if (mTime) { h = +mTime[1]; mi = +mTime[2]; }
@@ -490,7 +512,8 @@
         return datePart + ' ' + timePart;
     }
 
-    // 骞翠唤 + 2 浣嶆湀鏃?+ 鏃跺垎锛屾嫾鎴愪究浜庢瘮杈冪殑瀛楃涓?    function ymdhi(d) {
+    // 年份 + 2 位月日 + 时分，拼成便于比较的字符串
+    function ymdhi(d) {
         return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate())
              + ' ' + pad2(d.getHours()) + ':' + pad2(d.getMinutes());
     }
@@ -503,7 +526,7 @@
         return pad2(d.getHours()) + ':' + pad2(d.getMinutes());
     }
 
-    // 缁熶竴瑙ｆ瀽鎴?Date锛涜В鏋愪笉鍑烘潵杩斿洖 null
+    // 统一解析成 Date；解析不出来返回 null
     function parseToDate(str) {
         if (!str) return null;
         const v = parseDateTime(String(str), 'datetime', null);
@@ -511,25 +534,26 @@
         return new Date(v.y, v.m - 1, v.d, v.h, v.mi, 0, 0);
     }
 
-    /* ---------- 閫夐」鏁版嵁锛堜笅鎷?婊氳疆涓ょ敤锛?---------- */
+    /* ---------- 选项数据（下拉/滚轮两用） ---------- */
     const OPTION_SETS = {
-        // 鏄惁鍑烘牎 / 鏄惁绂诲紑瀛︽牎鎵€鍦ㄥ湴
-        yesno: ['鏄?, '鍚?],
-        // 璇峰亣绫诲瀷
-        leaveType: ['浜嬪亣', '鐥呭亣', '鍏亣', '涓у亣', '濠氬亣', '浜у亣', '鍏朵粬'],
-        // 璇峰亣鎬ц川
-        leaveNature: ['鍥犵璇峰亣', '鍥犲叕璇峰亣', '鍥犵梾璇峰亣', '鍥犱簨璇峰亣'],
-        // 瀛﹀勾锛氫互褰撳墠骞翠负鐣屽墠鍚庡悇灞曞紑鑻ュ共骞?        year: (function () {
+        // 是否出校 / 是否离开学校所在地
+        yesno: ['是', '否'],
+        // 请假类型
+        leaveType: ['事假', '病假', '公假', '丧假', '婚假', '产假', '其他'],
+        // 请假性质
+        leaveNature: ['因私请假', '因公请假', '因病请假', '因事请假'],
+        // 学年：以当前年为界前后各展开若干年
+        year: (function () {
             const cur = new Date().getFullYear();
             const list = [];
             for (let y = cur - 3; y <= cur + 3; y++) {
-                list.push(y + '-' + (y + 1) + '瀛﹀勾');
+                list.push(y + '-' + (y + 1) + '学年');
             }
             return list;
         })()
     };
 
-    // data-options 閲屽彲浠ョ洿鎺ュ啓 "@yesno" 杩欐牱鐨勫紩鐢紝涔熷彲浠ョ敤 "|" 鍒嗛殧鍐欐
+    // data-options 里可以直接写 "@yesno" 这样的引用，也可以用 "|" 分隔写死
     function resolveOptions(expr) {
         if (!expr) return [];
         const key = expr.replace(/^@/, '').trim();
@@ -537,12 +561,13 @@
         return expr.split('|').map(s => s.trim()).filter(Boolean);
     }
 
-    /* ---------- 鏋勫缓婊氳疆 ---------- */
+    /* ---------- 构建滚轮 ---------- */
     function buildColumn(options, currentIndex, formatter) {
         const col = document.createElement('div');
         col.className = 'picker-col';
 
-        // 涓婁笅鍚勭暀鍑?(220-44)/2 = 88px 鐨勭┖鐧斤紝璁╃涓€椤瑰拰鏈€鍚庝竴椤逛篃鑳芥粴鍒颁腑闂?        const padTop = document.createElement('div');
+        // 上下各留出 (220-44)/2 = 88px 的空白，让第一项和最后一项也能滚到中间
+        const padTop = document.createElement('div');
         padTop.style.height = ((220 - ITEM_H) / 2) + 'px';
         padTop.style.flex = '0 0 auto';
         col.appendChild(padTop);
@@ -560,7 +585,8 @@
         padBottom.style.flex = '0 0 auto';
         col.appendChild(padBottom);
 
-        // 鐐瑰嚮鏌愪竴椤癸細婊氬埌涓棿骞舵洿鏂?        col.addEventListener('click', function (e) {
+        // 点击某一项：滚到中间并更新
+        col.addEventListener('click', function (e) {
             const item = e.target.closest('.item');
             if (!item) return;
             const idx = +item.dataset.index;
@@ -569,27 +595,30 @@
             if (pickerState && pickerState.onChange) pickerState.onChange();
         });
 
-        // 鎵嬫寚婊氬姩缁撴潫鍚庡啀瀵归綈涓€娆★紙scroll-snap 宸插鐞嗗惛闄勶紝杩欓噷琛ラ綈閫昏緫锛?        col.addEventListener('scrollend', function () {
+        // 手指滚动结束后再对齐一次（scroll-snap 已处理吸附，这里补齐逻辑）
+        col.addEventListener('scrollend', function () {
             const idx = Math.round(col.scrollTop / ITEM_H);
             markColumn(col, idx);
             if (pickerState && pickerState.onChange) pickerState.onChange();
         });
 
-        // 鍏滃簳锛氭粴鍔ㄤ腑瀹炴椂楂樹寒鏈€杩戠殑椤癸紙鍏煎娌℃湁 scrollend 鐨勬祻瑙堝櫒锛?        col.addEventListener('scroll', function () {
+        // 兜底：滚动中实时高亮最近的项（兼容没有 scrollend 的浏览器）
+        col.addEventListener('scroll', function () {
             const idxNow = Math.round(col.scrollTop / ITEM_H);
             markColumn(col, idxNow);
         }, { passive: true });
 
         col.valueIndex = 0;
-        // 鍏堟寕鍒?DOM 鍚庢墠濂借缃?scrollTop
+        // 先挂到 DOM 后才好设置 scrollTop
         col._initIndex = currentIndex;
         return col;
     }
 
     function scrollColumnTo(col, index, smooth) {
-        const max = col.children.length - 3; // 鍘绘帀涓婁笅涓や釜 padding
+        const max = col.children.length - 3; // 去掉上下两个 padding
         index = Math.max(0, Math.min(max, index));
-        col.valueIndex = index;              // 绔嬪嵆纭閫変腑鍊硷紝涓嶄緷璧栧姩鐢绘槸鍚︾湡鐨勮窇瀹?        const top = index * ITEM_H;
+        col.valueIndex = index;              // 立即确认选中值，不依赖动画是否真的跑完
+        const top = index * ITEM_H;
         if (smooth && typeof col.scrollTo === 'function') {
             col.scrollTo({ top: top, behavior: 'smooth' });
         } else {
@@ -610,7 +639,7 @@
         }
     }
 
-    /* ---------- 鎵撳紑 / 鍏抽棴 ---------- */
+    /* ---------- 打开 / 关闭 ---------- */
     function openPicker(initialValue, opts) {
         opts = opts || {};
         const mode = opts.mode || 'datetime';
@@ -623,7 +652,7 @@
 
         pickerColumns.innerHTML = '';
 
-        /* ===== 閫夐」鍨嬫粴杞細鏄惁鍑烘牎銆佽鍋囩被鍨嬨€佸骞磋繖绫绘灇涓惧€?===== */
+        /* ===== 选项型滚轮：是否出校、请假类型、学年这类枚举值 ===== */
         if (mode === 'option') {
             const options = opts.options || [];
             if (!options.length) {
@@ -638,8 +667,8 @@
                 cols: [],
                 onChange: null
             };
-            pickerCancel.textContent = '鍙栨秷';
-            pickerTitle.textContent = opts.title || '璇烽€夋嫨';
+            pickerCancel.textContent = '取消';
+            pickerTitle.textContent = opts.title || '请选择';
             pickerColumns.classList.add('single');
 
             const idx = Math.max(0, options.indexOf(String(initialValue || '').trim()));
@@ -656,7 +685,7 @@
             return;
         }
 
-        /* ===== 鏃堕棿鍨嬫粴杞細骞存湀鏃ユ椂鍒?===== */
+        /* ===== 时间型滚轮：年月日时分 ===== */
         pickerColumns.classList.remove('single');
         const value = parseDateTime(initialValue, mode, fallback);
 
@@ -667,37 +696,43 @@
             value: value,
             cols: []
         };
-        // 鍙€夋竻绌烘椂锛屾爣棰樺彸渚у鍔犫€滄竻绌衡€?        pickerCancel.textContent = pickerState.allowEmpty ? '娓呯┖' : '鍙栨秷';
-        pickerTitle.textContent = opts.title || (mode === 'date' ? '閫夋嫨鏃ユ湡' : mode === 'time' ? '閫夋嫨鏃堕棿' : '閫夋嫨鏃ユ湡鏃堕棿');
+        // 可选清空时，标题右侧增加“清空”
+        pickerCancel.textContent = pickerState.allowEmpty ? '清空' : '取消';
+        pickerTitle.textContent = opts.title || (mode === 'date' ? '选择日期' : mode === 'time' ? '选择时间' : '选择日期时间');
 
         const cols = [];
 
-        // 骞达紙褰撳墠骞村墠鍚庡悇 10 骞?+ 杈撳叆鍊兼墍鍦ㄥ勾锛?        if (mode !== 'time') {
+        // 年（当前年前后各 10 年 + 输入值所在年）
+        if (mode !== 'time') {
             const years = [];
             const y0 = Math.min(Math.min(now.getFullYear() - 10, value.y), value.y);
             for (let y = y0; y <= Math.max(now.getFullYear() + 10, value.y); y++) years.push(y);
-            cols.push({ key: 'y', el: buildColumn(years, years.indexOf(value.y), v => v + '骞?), options: years });
+            cols.push({ key: 'y', el: buildColumn(years, years.indexOf(value.y), v => v + '年'), options: years });
         }
-        // 鏈?        if (mode !== 'time') {
+        // 月
+        if (mode !== 'time') {
             const months = Array.from({length: 12}, (_, i) => i + 1);
-            cols.push({ key: 'm', el: buildColumn(months, value.m - 1, v => pad2(v) + '鏈?), options: months });
+            cols.push({ key: 'm', el: buildColumn(months, value.m - 1, v => pad2(v) + '月'), options: months });
         }
-        // 鏃ワ紙闅忓勾鏈堝姩鎬佸彉鍖栵級
+        // 日（随年月动态变化）
         if (mode !== 'time') {
             const days = Array.from({length: daysInMonth(value.y, value.m)}, (_, i) => i + 1);
-            cols.push({ key: 'd', el: buildColumn(days, value.d - 1, v => pad2(v) + '鏃?), options: days });
+            cols.push({ key: 'd', el: buildColumn(days, value.d - 1, v => pad2(v) + '日'), options: days });
         }
-        // 鏃?        if (mode !== 'date') {
-            cols.push({ key: 'h', el: buildColumn(HOURS, value.h, v => v + '鏃?), options: HOURS });
+        // 时
+        if (mode !== 'date') {
+            cols.push({ key: 'h', el: buildColumn(HOURS, value.h, v => v + '时'), options: HOURS });
         }
-        // 鍒?        if (mode !== 'date') {
-            cols.push({ key: 'mi', el: buildColumn(MINUTES, value.mi, v => v + '鍒?), options: MINUTES });
+        // 分
+        if (mode !== 'date') {
+            cols.push({ key: 'mi', el: buildColumn(MINUTES, value.mi, v => v + '分'), options: MINUTES });
         }
 
         cols.forEach(function (c) { pickerColumns.appendChild(c.el); });
         pickerState.cols = cols;
 
-        // 骞存湀鍙樺寲鏃堕噸寤衡€滄棩鈥濊繖涓€鍒楋紝淇濊瘉 2 鏈?29 鏃ヤ箣绫讳笉浼氳秺鐣?        pickerState.onChange = function () {
+        // 年月变化时重建“日”这一列，保证 2 月 29 日之类不会越界
+        pickerState.onChange = function () {
             if (mode === 'time' || !pickerState) return;
             const yCol = pickerState.cols.find(c => c.key === 'y');
             const mCol = pickerState.cols.find(c => c.key === 'm');
@@ -710,8 +745,8 @@
             if (maxD !== currentDays) {
                 const keep = Math.min(dCol.el.valueIndex + 1, maxD);
                 const newDays = Array.from({length: maxD}, (_, i) => i + 1);
-                const newEl = buildColumn(newDays, keep - 1, v => pad2(v) + '鏃?);
-                dCol.el.replaceWith(newEl);   // 鍘熷湴鏇挎崲锛屽垪椤哄簭涓嶅彉
+                const newEl = buildColumn(newDays, keep - 1, v => pad2(v) + '日');
+                dCol.el.replaceWith(newEl);   // 原地替换，列顺序不变
                 dCol.el = newEl;
                 dCol.options = newDays;
                 requestAnimationFrame(function () {
@@ -720,7 +755,8 @@
             }
         };
 
-        // 鎵撳紑鍔ㄧ敾缁撴潫鍚庡啀婊氬埌鐩爣浣嶇疆锛岄伩鍏?scrollTo 鍦ㄨ闅愯棌鏃跺け鏁?        pickerMask.classList.add('show');
+        // 打开动画结束后再滚到目标位置，避免 scrollTo 在被隐藏时失效
+        pickerMask.classList.add('show');
         document.body.classList.add('picker-open');
         opening = true;
         requestAnimationFrame(function () {
@@ -742,7 +778,8 @@
     function confirmPicker() {
         if (!pickerState) return;
 
-        // 閫夐」鍨嬶細鐩存帴鎶婇€変腑鐨勬枃瀛楀師鏍峰洖浼?        if (pickerState.mode === 'option') {
+        // 选项型：直接把选中的文字原样回传
+        if (pickerState.mode === 'option') {
             const c = pickerState.cols[0];
             const picked = c.options[c.el.valueIndex];
             const cb = pickerState.onConfirm;
@@ -785,11 +822,12 @@
         cb(payload);
     }
 
-    /* ---------- 缁戝畾浜嬩欢 ---------- */
+    /* ---------- 绑定事件 ---------- */
     pickerConfirm.addEventListener('click', confirmPicker);
 
     pickerCancel.addEventListener('click', function () {
-        // 鍙€夊瓧娈碉細鐐光€滄竻绌衡€濈洿鎺ユ竻鎺夊€?        if (pickerState && pickerState.allowEmpty) {
+        // 可选字段：点“清空”直接清掉值
+        if (pickerState && pickerState.allowEmpty) {
             const cb = pickerState.onConfirm;
             const mode = pickerState.mode;
             closePicker();
@@ -810,13 +848,16 @@
         if (e.key === 'Enter') confirmPicker();
     });
 
-    // 缁欓〉闈笂鎵€鏈?data-picker 鍏冪礌鎸傜偣鍑讳簨浠?    function bindPickers() {
+    // 给页面上所有 data-picker 元素挂点击事件
+    function bindPickers() {
         document.querySelectorAll('[data-picker]').forEach(function (el) {
             if (el._pickerBound) return;
             el._pickerBound = true;
 
-            // 鍏抽敭锛氬湪 mousedown / touchstart 闃舵灏辨嫤鎺夐粯璁よ涓猴紝
-            // 鍚﹀垯娴忚鍣ㄤ細鍏堣仛鐒﹀埌閲岄潰鐨?<input>锛屾墜鏈轰笂鐩存帴寮瑰嚭绯荤粺閿洏锛?            // 缁撴灉閿洏鍜屾粴杞悓鏃跺嚭鐜般€傛嫤浣忓悗鐢变笅闈㈢殑 click 缁熶竴澶勭悊銆?            const blockFocus = function (e) {
+            // 关键：在 mousedown / touchstart 阶段就拦掉默认行为，
+            // 否则浏览器会先聚焦到里面的 <input>，手机上直接弹出系统键盘，
+            // 结果键盘和滚轮同时出现。拦住后由下面的 click 统一处理。
+            const blockFocus = function (e) {
                 if (document.body.classList.contains('preview-mode')) return;
                 e.preventDefault();
             };
@@ -824,11 +865,11 @@
             el.addEventListener('touchstart', blockFocus, { passive: false });
 
             el.addEventListener('click', function (e) {
-                // 棰勮妯″紡涓嬩笉寮瑰嚭
+                // 预览模式下不弹出
                 if (document.body.classList.contains('preview-mode')) return;
                 e.preventDefault();
                 e.stopPropagation();
-                // 鍙屼繚闄╋細涓囦竴宸茬粡鑱氱劍涓婁簡锛岀珛鍒诲け鐒︼紝鏀舵帀閿洏
+                // 双保险：万一已经聚焦上了，立刻失焦，收掉键盘
                 if (document.activeElement && document.activeElement.blur) {
                     document.activeElement.blur();
                 }
@@ -845,10 +886,10 @@
                     current = ((dateLine && dateLine.textContent) || '') + ' ' + ((timeLine && timeLine.textContent) || '');
                 }
 
-                // 鏍囬鍙栧乏渚?label 鏂囧瓧
+                // 标题取左侧 label 文字
                 const cell = el.closest('.cell');
                 const labelEl = cell && cell.querySelector('.cell-label');
-                const title = labelEl ? labelEl.textContent.trim() : '閫夋嫨鏃堕棿';
+                const title = labelEl ? labelEl.textContent.trim() : '选择时间';
 
                 openPicker(current, {
                     mode: mode,
@@ -868,9 +909,9 @@
                             if (dateLine) dateLine.textContent = res.y + '-' + pad2(res.m) + '-' + pad2(res.d);
                             if (timeLine) timeLine.textContent = pad2(res.h) + ':' + pad2(res.mi);
                         }
-                        // 璁╁閮ㄨ兘鍚埌鍙樺寲
+                        // 让外部能听到变化
                         el.dispatchEvent(new CustomEvent('datetimechange', { detail: res, bubbles: true }));
-                        // 椤甸潰鍐呴儴鐨勮仈鍔ㄩ€昏緫
+                        // 页面内部的联动逻辑
                         if (typeof el._afterPick === 'function') el._afterPick(res);
                     }
                 });
@@ -878,31 +919,49 @@
         });
     }
 
-    /* ================= 璇峰亣淇℃伅鑱斿姩 =================
-       1. 閫夊畬銆岃鍋囧紑濮嬫棩鏈熴€嶁啋 鐢宠鏃ユ湡 = 寮€濮嬫椂闂?- 3 灏忔椂锛堣法澶╄嚜鍔ㄥ鐞嗭級
-       2. 鐢宠鏃ユ湡鍙樹簡 鈫?瀹℃牳娴佺▼锛氭彁浜ょ敵璇锋椂闂村悓姝ワ紱杈呭鍛樺鏍告椂闂?+ 1 灏忔椂
-       3. 寮€濮?缁撴潫鏃堕棿鍙樹簡 鈫?璇峰亣澶╂暟鑷姩璁＄畻锛堟寜灏忔椂鎹㈢畻鎴愬ぉ锛屼繚鐣欎袱浣嶏級
+    /* ================= 请假信息联动 =================
+       1. 选完「请假开始日期」→ 申请日期 = 开始时间 - 3 小时（跨天自动处理）
+          申请日期本身只读，只跟请假开始时间绑定
+       2. 申请日期变了 → 审核流程：
+          「提交申请」时间 = 申请日期
+          「辅导员审核」时间 = 申请时间 + 1 小时 + 随机 0~10 分钟
+       3. 开始/结束时间变了 → 请假天数自动计算（按小时换算成天，保留两位）
        ================================================= */
     const $ = function (id) { return document.getElementById(id); };
 
-    // 鎶?Date 鍐欒繘鈥滃勾-鏈?鏃?/ 鏃?鍒嗏€濅袱琛屾樉绀?    function writeStepTime(prefix, d) {
+    // 辅导员审核在“申请时间 + 1 小时”基础上随机多加的分钟数
+    let auditExtraMin = Math.floor(Math.random() * 11);
+    let lastAuditApply = '';
+
+    // 把 Date 写进“年-月-日 / 时:分”两行显示
+    function writeStepTime(prefix, d) {
         const dateEl = $(prefix + '-date');
         const timeEl = $(prefix + '-time');
         if (dateEl) dateEl.textContent = ymd(d);
         if (timeEl) timeEl.textContent = hm(d);
     }
 
-    // 鐢宠鏃ユ湡鍙樺寲鍚庯紝鍚屾瀹℃牳娴佺▼鐨勪袱涓椂闂存埑
+    // 申请日期变化后，同步审核流程的两个时间戳
+    // 「辅导员审核」= 申请时间 + 1 小时 + 随机 0~10 分钟
     function syncAuditSteps() {
         const applyEl = $('apply-time');
         if (!applyEl) return;
         const applied = parseToDate(applyEl.value);
         if (!applied) return;
         writeStepTime('step0', applied);
-        writeStepTime('step1', new Date(applied.getTime() + 60 * 60 * 1000));
+
+        // 只有申请时间真的变了才重新掷一次随机分钟，避免同一时间反复刷新
+        if (applyEl.value !== lastAuditApply) {
+            lastAuditApply = applyEl.value;
+            auditExtraMin = Math.floor(Math.random() * 11);   // 0~10 分钟
+        }
+        const reviewAt = new Date(
+            applied.getTime() + 60 * 60 * 1000 + auditExtraMin * 60 * 1000
+        );
+        writeStepTime('step1', reviewAt);
     }
 
-    // 鎸夊紑濮?缁撴潫鏃堕棿绠楄鍋囧ぉ鏁帮紱涓嶈冻涓€澶╂寜灏忔椂鎶樼畻
+    // 按开始/结束时间算请假天数；不足一天按小时折算
     function recalcLeaveDays() {
         const daysEl = $('leave-days');
         const startEl = $('start-time');
@@ -916,7 +975,7 @@
         daysEl.value = days.toFixed(2);
     }
 
-    // 鐢宠鏃ユ湡鏁翠綋鍓嶇Щ 3 灏忔椂锛堝惈璺ㄦ湀銆佽法骞达級
+    // 申请日期整体前移 3 小时（含跨月、跨年）
     function applyFromStart() {
         const startEl = $('start-time');
         const applyEl = $('apply-time');
@@ -929,28 +988,29 @@
     }
 
     function bindLeaveLogic() {
-        const applyCell = $('apply-time') && $('apply-time').closest('[data-picker]');
         const startCell = $('start-time') && $('start-time').closest('[data-picker]');
         const endCell = $('end-time') && $('end-time').closest('[data-picker]');
 
-        // 鎵嬪姩鏀圭敵璇锋棩鏈燂紙婊氳疆閫夛級鈫?鍙悓姝ュ鏍告祦绋?        if (applyCell) applyCell._afterPick = function () { syncAuditSteps(); };
+        // 申请日期已改为只读，不再参与滚轮选择
 
-        // 閫夊畬璇峰亣寮€濮嬫椂闂?鈫?鐢宠鏃堕棿 = 寮€濮?- 3h锛屽啀鑱斿姩瀹℃牳娴佺▼
+        // 选完请假开始时间 → 申请时间 = 开始 - 3h，再联动审核流程
         if (startCell) startCell._afterPick = function () {
             applyFromStart();
             recalcLeaveDays();
         };
 
         if (endCell) endCell._afterPick = function () {
-            // 鍏堟寜鏂扮殑缁撴潫鏃堕棿绠楀ぉ鏁帮紝鍐嶅仛瓒婄晫鍥為€€锛岄伩鍏嶆椂搴忛棶棰?            recalcLeaveDays();
+            // 先按新的结束时间算天数，再做越界回退，避免时序问题
+            recalcLeaveDays();
             const start = parseToDate($('start-time').value);
             const end = parseToDate($('end-time').value);
-            // 缁撴潫鏃堕棿琚€夊埌寮€濮嬫椂闂翠箣鍓嶄笖鍚屼竴澶╋細鎶婂紑濮嬫椂闂撮『寤跺埌缁撴潫鏃堕棿锛屼繚璇佸ぉ鏁伴潪璐?            if (start && end && end.getTime() < start.getTime()) {
+            // 结束时间被选到开始时间之前且同一天：把开始时间顺延到结束时间，保证天数非负
+            if (start && end && end.getTime() < start.getTime()) {
                 $('leave-days').value = '0.00';
             }
         };
 
-        // 瀹℃牳浜鸿緭鍏ユ锛氬唴瀹瑰彉闀垮彉鐭椂鑷€傚簲瀹藉害锛屼笉鎾戠牬甯冨眬
+        // 审核人输入框：内容变长变短时自适应宽度，不撑破布局
         const reviewer = $('reviewer');
         if (reviewer) {
             const fit = function () {
@@ -964,16 +1024,18 @@
         recalcLeaveDays();
     }
 
-    /* ================= 椤靛唴 404 鎻愮ず =================
-       鈥滃畾浣嶉攢鍋?/ 缁亣鐢宠鈥濆湪杩欎釜闈欐€侀〉闈㈤噷娌℃湁瀵瑰簲璺敱锛?       鐩存帴寮规湰椤电殑鎻愮ず灞傦紝涓嶅啀璺冲埌涓嶅瓨鍦ㄧ殑鍦板潃锛堝惁鍒欎細鍙樻垚鐪?404锛夈€?       ================================================ */
+    /* ================= 页内 404 提示 =================
+       “定位销假 / 续假申请”在这个静态页面里没有对应路由，
+       直接弹本页的提示层，不再跳到不存在的地址（否则会变成真 404）。
+       ================================================ */
     function showNotFound(which) {
         const mask = $('nf-mask');
         if (!mask) return;
         const isRenew = which === 'renew';
-        $('nf-title').textContent = isRenew ? '缁亣鐢宠' : '瀹氫綅閿€鍋?;
+        $('nf-title').textContent = isRenew ? '续假申请' : '定位销假';
         $('nf-desc').textContent = isRenew
-            ? '缁亣鐢宠鍔熻兘鏆傛湭寮€鏀撅紝璇峰埌瀛︽牎璇峰亣绯荤粺鍐呮彁浜ょ画鍋囥€?
-            : '瀹氫綅閿€鍋囧姛鑳芥殏鏈紑鏀撅紝璇峰埌瀛︽牎璇峰亣绯荤粺鍐呭畬鎴愰攢鍋囧畾浣嶃€?;
+            ? '续假申请功能暂未开放，请到学校请假系统内提交续假。'
+            : '定位销假功能暂未开放，请到学校请假系统内完成销假定位。';
         mask.classList.add('show');
         document.body.classList.add('picker-open');
     }
@@ -982,7 +1044,8 @@
         const mask = $('nf-mask');
         if (!mask) return;
         mask.classList.remove('show');
-        // 鍙湁鍦ㄦ病鏈夋墦寮€婊氳疆鐨勬儏鍐典笅鎵嶆仮澶嶉〉闈㈡粴鍔?        if (!$('picker-mask') || !$('picker-mask').classList.contains('show')) {
+        // 只有在没有打开滚轮的情况下才恢复页面滚动
+        if (!$('picker-mask') || !$('picker-mask').classList.contains('show')) {
             document.body.classList.remove('picker-open');
         }
     }
@@ -999,8 +1062,12 @@
         });
     }
 
-    /* ================= 鍙屽嚮鈥滃畾浣嶉攢鍋団€濆垏鎹?缂栬緫/棰勮 =================
-       榛樿涓嶆樉绀?#mode-btn锛?       - 棰勮鎬侊細鍙屽嚮鈥滃畾浣嶉攢鍋団€濃啋 鍑虹幇榛戝潡锛岃繘鍏ョ紪杈?       - 缂栬緫鎬侊細鍐嶆鍙屽嚮鈥滃畾浣嶉攢鍋団€濃啋 鏀惰捣榛戝潡锛屽洖鍒伴瑙?       鍗曞嚮鈥滃畾浣嶉攢鍋団€濅粛鐒跺脊椤靛唴 404 鎻愮ず銆?       ============================================================== */
+    /* ================= 双击“定位销假”切换 编辑/预览 =================
+       默认不显示 #mode-btn；
+       - 预览态：双击“定位销假”→ 出现黑块，进入编辑
+       - 编辑态：再次双击“定位销假”→ 收起黑块，回到预览
+       单击“定位销假”仍然弹页内 404 提示。
+       ============================================================== */
     const modeBtn = document.getElementById('mode-btn');
     const locateBtn = document.getElementById('locate-btn');
     let lastLocateTap = 0;
@@ -1012,7 +1079,8 @@
         document.body.classList.remove('preview-mode');
         modeBtn.removeAttribute('hidden');
         updateModeBtn();
-        // 鍙屽嚮鏈夋槑纭弽棣堬紙涓嶆敮鎸侀渿鍔ㄤ篃鏃犲Θ锛?        if (navigator.vibrate) {
+        // 双击有明确反馈（不支持震动也无妨）
+        if (navigator.vibrate) {
             try { navigator.vibrate(15); } catch (e) {}
         }
     }
@@ -1022,7 +1090,8 @@
         document.body.classList.add('preview-mode');
         modeBtn.setAttribute('hidden', '');
         updateModeBtn();
-        // 閫€鍑烘椂椤烘墜鎶婂彲鑳借繕寮€鐫€鐨勬粴杞?鎻愮ず灞傛敹鎺?        if (pickerState) closePicker();
+        // 退出时顺手把可能还开着的滚轮/提示层收掉
+        if (pickerState) closePicker();
         const nf = $('nf-mask');
         if (nf && nf.classList.contains('show')) hideNotFound();
     }
@@ -1039,23 +1108,26 @@
 
             const now = Date.now();
 
-            // 绗簩涓嬶紙璺濈涓€涓嬭冻澶熻繎锛夛細鍒ゅ畾涓哄弻鍑伙紝鍒囨崲缂栬緫/棰勮銆?            // 杩欓噷涓嶅啀鐢?suppress 鏍囧織鈥斺€斿惁鍒欎笅涓€杞殑绗竴涓嬩細琚鍚炪€?            if (now - lastLocateTap < DOUBLE_MS) {
+            // 第二下（距第一下足够近）：判定为双击，切换编辑/预览。
+            // 这里不再用 suppress 标志——否则下一轮的第一下会被误吞。
+            if (now - lastLocateTap < DOUBLE_MS) {
                 lastLocateTap = 0;
                 clearTimeout(locateTapTimer);
                 if (isEditMode()) exitEdit(); else enterEdit();
                 return;
             }
 
-            // 绗竴涓嬶細鍏堣涓嬫椂闂达紝绛変竴浼氬効纭娌℃湁绗簩涓嬫墠褰撳崟鍑诲鐞?            lastLocateTap = now;
+            // 第一下：先记下时间，等一会儿确认没有第二下才当单击处理
+            lastLocateTap = now;
             clearTimeout(locateTapTimer);
             locateTapTimer = setTimeout(function () {
                 lastLocateTap = 0;
-                // 纭鏄崟鍑伙細寮规湰椤?404 鎻愮ず
+                // 确认是单击：弹本页 404 提示
                 showNotFound('locate');
             }, DOUBLE_MS);
         });
 
-        // 缁亣鐢宠锛氬悓鏍峰脊椤靛唴 404
+        // 续假申请：同样弹页内 404
         const renewBtn = $('renew-btn');
         if (renewBtn) {
             renewBtn.addEventListener('click', function (e) {
@@ -1064,14 +1136,15 @@
             });
         }
 
-        // 榛戝潡鏈韩锛堚€滈瑙堚€濓級锛氱偣涓€涓嬪氨鍥炲埌棰勮妯″紡骞舵敹璧?        bindModeBtn();
+        // 黑块本身（“预览”）：点一下就回到预览模式并收起
+        bindModeBtn();
     }
 
     function bindModeBtn() {
         const btn = document.getElementById('mode-btn');
         if (!btn || btn._modeBound) return;
         btn._modeBound = true;
-        // 鐢?JS 缁戝畾鏇挎崲鎺?HTML 涓婄殑鍐呰仈 onclick锛岄€€鍑烘椂鎵嶈兘缁熶竴鏀惰捣榛戝潡
+        // 用 JS 绑定替换掉 HTML 上的内联 onclick，退出时才能统一收起黑块
         btn.onclick = null;
         btn.removeAttribute('onclick');
         btn.addEventListener('click', function (e) {
@@ -1080,7 +1153,7 @@
         });
     }
 
-    // 鑴氭湰绱ц创鍦?</body> 鍓嶏紝DOM 宸茬粡瑙ｆ瀽瀹岋紝鐩存帴缁戝畾鍗冲彲
+    // 脚本紧贴在 </body> 前，DOM 已经解析完，直接绑定即可
     updateModeBtn();
     bindPickers();
     bindLeaveLogic();
