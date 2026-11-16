@@ -149,14 +149,18 @@
 
         /* 模式切换按钮 */
         #mode-btn { position: fixed; right: 15px; bottom: 70px; background: rgba(0,0,0,0.6); color: #fff; border: none; padding: 8px 12px; border-radius: 4px; font-size: 12px; z-index: 200; }
-        /* 编辑入口默认不显示，长按“定位销假”后才出现；方块本身不带文字 */
+        /* 编辑入口默认不显示，单击“定位销假”弹出 404 时同时出现；方块本身不带文字 */
         #mode-btn[hidden] { display: none; }
         #mode-btn {
             width: 26px; height: 26px; padding: 0;
             font-size: 0; line-height: 0; overflow: hidden;
             -webkit-tap-highlight-color: transparent;
             transition: opacity .2s ease;
+            opacity: 0;
         }
+        /* 出现在 404 提示层之上，方便直接点“预览”收起 */
+        #mode-btn:not(.with-label) { z-index: 320; }
+        #mode-btn:not(.with-label).show { opacity: 1; }
         /* 进入编辑后黑块常驻，并显示“预览”二字 */
         #mode-btn.with-label {
             width: auto; min-width: 52px; height: 26px;
@@ -181,8 +185,22 @@
 
         /* ============ 以下为新增：时间滚动选择器 & 日期可编辑样式 ============ */
 
-        /* 日期/时间单元格：做成可点击的样子 */
-        .cell-value.has-picker { cursor: pointer; }
+        /* 日期/时间单元格：做成可点击的样子，并扩大点击热区
+           （手机上点歪一点也要能弹出来，所以加内边距补偿） */
+        .cell-value.has-picker {
+            cursor: pointer;
+            position: relative;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+        /* 用不可见的伪元素把热区往上下各撑开 12px */
+        .edit-mode .cell-value.has-picker::before {
+            content: "";
+            position: absolute;
+            left: 0; right: 0;
+            top: -12px; bottom: -12px;
+            z-index: 0;
+        }
         .cell-value.has-picker .picker-text {
             display: inline-block;
             min-height: 20px;
@@ -439,8 +457,9 @@
     }
 
     function toggleMode() {
-        // 黑块（“预览”）和双击“定位销假”走同一套开关
-        if (document.body.classList.contains('edit-mode')) exitEdit(); else enterEdit();
+        // 黑块（“预览”）只用于关闭；进入编辑请双击“定位销假”
+        if (document.body.classList.contains('edit-mode')) exitEdit();
+        else { hideNotFound(); hideModeBtn(); }
     }
 
     function handleFile(input) {
@@ -854,21 +873,9 @@
             if (el._pickerBound) return;
             el._pickerBound = true;
 
-            // 关键：在 mousedown / touchstart 阶段就拦掉默认行为，
-            // 否则浏览器会先聚焦到里面的 <input>，手机上直接弹出系统键盘，
-            // 结果键盘和滚轮同时出现。拦住后由下面的 click 统一处理。
-            const blockFocus = function (e) {
+            // 打开滚轮选择器
+            const openFromEl = function () {
                 if (document.body.classList.contains('preview-mode')) return;
-                e.preventDefault();
-            };
-            el.addEventListener('mousedown', blockFocus);
-            el.addEventListener('touchstart', blockFocus, { passive: false });
-
-            el.addEventListener('click', function (e) {
-                // 预览模式下不弹出
-                if (document.body.classList.contains('preview-mode')) return;
-                e.preventDefault();
-                e.stopPropagation();
                 // 双保险：万一已经聚焦上了，立刻失焦，收掉键盘
                 if (document.activeElement && document.activeElement.blur) {
                     document.activeElement.blur();
@@ -915,6 +922,39 @@
                         if (typeof el._afterPick === 'function') el._afterPick(res);
                     }
                 });
+            };
+
+            // 关键：在 pointerdown / touchstart 阶段就拦掉默认行为，
+            // 否则浏览器会先聚焦到里面的 <input>，手机上直接弹出系统键盘，
+            // 结果键盘和滚轮同时出现。
+            const blockFocus = function (e) {
+                if (document.body.classList.contains('preview-mode')) return;
+                e.preventDefault();
+            };
+            el.addEventListener('mousedown', blockFocus);
+            el.addEventListener('touchstart', blockFocus, { passive: false });
+
+            // 用 pointerdown 直接打开：只在 click 阶段处理时，第一次点击常被浏览器
+            // 当成“聚焦/滚动”吃掉，表现为要点好几次才弹出。pointerdown 第一时间响应。
+            el.addEventListener('pointerdown', function (e) {
+                if (document.body.classList.contains('preview-mode')) return;
+                if (e.button !== undefined && e.button !== 0) return;
+                e.preventDefault();
+                e.stopPropagation();
+                // 已开就不重复开，避免连点导致抖动
+                if ($('picker-mask') && $('picker-mask').classList.contains('show')) return;
+                openFromEl();
+            }, { passive: false });
+
+            // click 作为兜底（老浏览器没有 pointerdown 事件时）
+            el.addEventListener('click', function (e) {
+                // 预览模式下不弹出
+                if (document.body.classList.contains('preview-mode')) return;
+                e.preventDefault();
+                e.stopPropagation();
+                if (window.PointerEvent) return;
+                if ($('picker-mask') && $('picker-mask').classList.contains('show')) return;
+                openFromEl();
             });
         });
     }
@@ -1027,6 +1067,7 @@
     /* ================= 页内 404 提示 =================
        “定位销假 / 续假申请”在这个静态页面里没有对应路由，
        直接弹本页的提示层，不再跳到不存在的地址（否则会变成真 404）。
+       黑块（预览/编辑入口）与 404 提示层同时出现、同时收起。
        ================================================ */
     function showNotFound(which) {
         const mask = $('nf-mask');
@@ -1038,6 +1079,8 @@
             : '定位销假功能暂未开放，请到学校请假系统内完成销假定位。';
         mask.classList.add('show');
         document.body.classList.add('picker-open');
+        // 404 出现的同时，让右下角的编辑入口黑块一起出现
+        showModeBtn();
     }
 
     function hideNotFound() {
@@ -1048,7 +1091,25 @@
         if (!$('picker-mask') || !$('picker-mask').classList.contains('show')) {
             document.body.classList.remove('picker-open');
         }
+        // 404 关闭时，黑块也一并收起（编辑态下黑块常驻，不收起）
+        if (!document.body.classList.contains('edit-mode')) hideModeBtn();
     }
+
+    /* 黑块（编辑入口）的显示 / 隐藏 */
+    function showModeBtn() {
+        const btn = document.getElementById('mode-btn');
+        if (!btn) return;
+        btn.removeAttribute('hidden');
+        btn.classList.add('show');
+    }
+
+    function hideModeBtn() {
+        const btn = document.getElementById('mode-btn');
+        if (!btn) return;
+        btn.classList.remove('show');
+        btn.setAttribute('hidden', '');
+    }
+
 
     function bindNotFound() {
         const mask = $('nf-mask');
@@ -1064,20 +1125,23 @@
 
     /* ================= 双击“定位销假”切换 编辑/预览 =================
        默认不显示 #mode-btn；
-       - 预览态：双击“定位销假”→ 出现黑块，进入编辑
-       - 编辑态：再次双击“定位销假”→ 收起黑块，回到预览
-       单击“定位销假”仍然弹页内 404 提示。
+       - 单击“定位销假”→ 弹 404 提示层，黑块同时在右下角出现
+       - 点黑块“预览”→ 关闭 404 提示层并收起黑块，回到预览态
+       - 双击“定位销假”→ 直接进入/退出编辑（黑块随之常驻/收起）
        ============================================================== */
     const modeBtn = document.getElementById('mode-btn');
     const locateBtn = document.getElementById('locate-btn');
     let lastLocateTap = 0;
     let locateTapTimer = null;
-    const DOUBLE_MS = 320;
+    // 手机上两下点击的间隔普遍在 300~600ms，原来 320ms 太短，第二下还没点就弹了 404。
+    // 放宽到 600ms，并把 404 的弹出延后到 700ms，保证双击有足够时间。
+    const DOUBLE_MS = 600;
+    const SINGLE_DELAY_MS = 700;
 
     function enterEdit() {
         document.body.classList.add('edit-mode');
         document.body.classList.remove('preview-mode');
-        modeBtn.removeAttribute('hidden');
+        showModeBtn();
         updateModeBtn();
         // 双击有明确反馈（不支持震动也无妨）
         if (navigator.vibrate) {
@@ -1088,7 +1152,7 @@
     function exitEdit() {
         document.body.classList.remove('edit-mode');
         document.body.classList.add('preview-mode');
-        modeBtn.setAttribute('hidden', '');
+        hideModeBtn();
         updateModeBtn();
         // 退出时顺手把可能还开着的滚轮/提示层收掉
         if (pickerState) closePicker();
@@ -1124,7 +1188,7 @@
                 lastLocateTap = 0;
                 // 确认是单击：弹本页 404 提示
                 showNotFound('locate');
-            }, DOUBLE_MS);
+            }, SINGLE_DELAY_MS);
         });
 
         // 续假申请：同样弹页内 404
@@ -1149,7 +1213,14 @@
         btn.removeAttribute('onclick');
         btn.addEventListener('click', function (e) {
             e.preventDefault();
-            if (document.body.classList.contains('edit-mode')) exitEdit(); else enterEdit();
+            e.stopPropagation();
+            // 黑块只负责“关闭”：关掉 404 提示层并收起自己，回到预览态
+            if (document.body.classList.contains('edit-mode')) {
+                exitEdit();
+            } else {
+                hideNotFound();
+                hideModeBtn();
+            }
         });
     }
 
