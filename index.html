@@ -1035,6 +1035,21 @@
         syncAuditSteps();
     }
 
+    // 请假开始 / 结束日期默认取「今天」，时分保持页面原有值不变。
+    // 只是初始默认值，用户仍可在滚轮里改年、月、日。
+    // 滚轮打开时读的就是 input.value，所以只需改 value，不需要额外同步。
+    function applyTodayDefault() {
+        const now = new Date();
+        const ymd = now.getFullYear() + '-' + pad2(now.getMonth() + 1) + '-' + pad2(now.getDate());
+        ['start-time', 'end-time'].forEach(function (id) {
+            const el = $(id);
+            if (!el) return;
+            const m = String(el.value).match(/(\d{1,2}):(\d{2})/);
+            const hm = m ? pad2(parseInt(m[1], 10)) + ':' + m[2] : '08:00';
+            el.value = ymd + ' ' + hm;
+        });
+    }
+
     function bindLeaveLogic() {
         const startCell = $('start-time') && $('start-time').closest('[data-picker]');
         const endCell = $('end-time') && $('end-time').closest('[data-picker]');
@@ -1068,7 +1083,9 @@
             fit();
         }
 
-        syncAuditSteps();
+        // 初始化：先由开始时间推出申请时间，再刷新审核流程和天数，
+        // 否则沿用 HTML 里写死的旧申请时间，日期改了也不会跟着变。
+        applyFromStart();
         recalcLeaveDays();
     }
 
@@ -1258,6 +1275,8 @@
     // 脚本紧贴在 </body> 前，DOM 已经解析完，直接绑定即可
     updateModeBtn();
     bindPickers();
+    // 先把开始/结束日期重置为今天，再绑定联动，最后按新值算一遍
+    applyTodayDefault();
     bindLeaveLogic();
     bindEditEntry();
     bindNotFound();
