@@ -117,6 +117,13 @@
         /* 底部按钮 */
         .footer { position: fixed; bottom: 0; width: 100%; height: 50px; display: flex; background: #fff; border-top: 1px solid #eee; z-index: 100; }
         .footer button { flex: 1; border: none; font-size: 16px; background: #fff; color: var(--cyan-main); }
+        /* 底部按钮：去掉移动端 300ms 点击延迟和滚动预备，双击才跟得上手 */
+        .footer button, #mode-btn {
+            touch-action: manipulation;
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+        }
         .btn-right { background: var(--cyan-main) !important; color: #fff !important; }
 
         /* ============ 新增：404 提示（内嵌在本页，不跳转外部页面） ============ */
@@ -149,24 +156,21 @@
 
         /* 模式切换按钮 */
         #mode-btn { position: fixed; right: 15px; bottom: 70px; background: rgba(0,0,0,0.6); color: #fff; border: none; padding: 8px 12px; border-radius: 4px; font-size: 12px; z-index: 200; }
-        /* 编辑入口默认不显示，单击“定位销假”弹出 404 时同时出现；方块本身不带文字 */
-        #mode-btn[hidden] { display: none; }
+        /* 只在编辑态出现；由 JS 移除 hidden 属性后可见 */
+        #mode-btn[hidden] { display: none !important; }
         #mode-btn {
             width: 26px; height: 26px; padding: 0;
             font-size: 0; line-height: 0; overflow: hidden;
             -webkit-tap-highlight-color: transparent;
-            transition: opacity .2s ease;
-            opacity: 0;
+            cursor: pointer;
         }
-        /* 出现在 404 提示层之上，方便直接点“预览”收起 */
-        #mode-btn:not(.with-label) { z-index: 320; }
-        #mode-btn:not(.with-label).show { opacity: 1; }
-        /* 进入编辑后黑块常驻，并显示“预览”二字 */
+        /* 编辑态黑块常驻，并显示“预览”二字 */
         #mode-btn.with-label {
             width: auto; min-width: 52px; height: 26px;
             padding: 0 10px;
             font-size: 12px; line-height: 26px;
             white-space: nowrap;
+            z-index: 320;
         }
         .preview-mode input { pointer-events: none; }
         .edit-mode input { border-bottom: 1px dashed var(--cyan-main); }
@@ -184,7 +188,6 @@
         .cell-value.readonly-cell::after { display: none !important; }
 
         /* ============ 以下为新增：时间滚动选择器 & 日期可编辑样式 ============ */
-
         /* 日期/时间单元格：做成可点击的样子，并扩大点击热区
            （手机上点歪一点也要能弹出来，所以加内边距补偿） */
         .cell-value.has-picker {
@@ -1091,7 +1094,7 @@
         }
     }
 
-    /* 黑块（编辑入口）的显示 / 隐藏 */
+    /* 黑块的显示 / 隐藏 —— 只靠 hidden 属性控制，避免样式冲突 */
     function showModeBtn() {
         const btn = document.getElementById('mode-btn');
         if (!btn) return;
@@ -1164,15 +1167,21 @@
     function bindEditEntry() {
         if (!locateBtn || !modeBtn) return;
 
+        // 同一个物理点击可能依次甩出 pointerdown / touchend / click，
+        // 若每个都算一次 tap，一次点击就会被记成好几下，判定必然错乱。
+        // 只在 150ms 内去重——这个窗口远小于双击间隔（300~600ms），
+        // 不会把真正的第二下吞掉。
+        const DEDUPE_MS = 150;
+        let lastEventAt = 0;
+
         // 核心点击处理：第一下先记时间并挂一个 700ms 的“单击确认”定时器；
         // 第二下（600ms 内）取消定时器，直接判定为双击。
         const handleTap = function (e) {
-            if (e) e.preventDefault();
+            if (e && e.cancelable) e.preventDefault();
 
             const now = Date.now();
 
             // 第二下（距第一下足够近）：判定为双击，切换编辑/预览。
-            // 这里不再用 suppress 标志——否则下一轮的第一下会被误吞。
             if (now - lastLocateTap < DOUBLE_MS) {
                 lastLocateTap = 0;
                 clearTimeout(locateTapTimer);
@@ -1190,16 +1199,27 @@
             }, SINGLE_DELAY_MS);
         };
 
-        // pointerdown 优先：手机上 click 可能因为聚焦/滚动预备被吞掉，
-        // 表现为“点三次才进编辑、点一次就弹 404”。pointerdown 第一时间响应。
-        if (window.PointerEvent) {
-            locateBtn.addEventListener('pointerdown', function (e) {
-                if (e.button !== undefined && e.button !== 0) return;
-                handleTap(e);
-            }, { passive: false });
-        } else {
-            locateBtn.addEventListener('click', handleTap);
-        }
+        // 去重包装：同一物理点击甩出的多个事件只在 150ms 内放行一次
+        const tapOnce = function (e) {
+            const now = Date.now();
+            if (now - lastEventAt < DEDUPE_MS) return;
+            lastEventAt = now;
+            handleTap(e);
+        };
+
+        // 触摸设备走 touchend —— 比 pointerdown 更可靠：pointerdown 在移动端
+        // 常被浏览器的“滚动/缩放预备”流程延后或吞掉，这正是“要点三次才进编辑”的原因。
+        locateBtn.addEventListener('touchend', tapOnce, { passive: false });
+        // 鼠标 / 触控笔 / 不支持触摸事件的环境走 pointerdown
+        locateBtn.addEventListener('pointerdown', function (e) {
+            if (e.pointerType === 'touch') return;   // 触摸已由 touchend 处理
+            if (e.button !== undefined && e.button !== 0) return;
+            tapOnce(e);
+        });
+        // 兜底：以上都没触发时（极老浏览器）用 click
+        locateBtn.addEventListener('click', function (e) {
+            tapOnce(e);
+        });
 
         // 续假申请：同样弹页内 404
         const renewBtn = $('renew-btn');
