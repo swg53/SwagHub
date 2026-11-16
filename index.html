@@ -450,16 +450,15 @@
     function updateModeBtn() {
         const isEdit = document.body.classList.contains('edit-mode');
         const btn = document.getElementById('mode-btn');
-        // 预览态入口是个无字小黑块；进入编辑后带“预览”二字，点它回到预览并收起
-        btn.textContent = isEdit ? '预览' : '';
-        btn.title = isEdit ? '预览模式' : '编辑模式';
-        btn.classList.toggle('with-label', isEdit);
+        // 黑块只在编辑态出现，且固定显示“预览”二字，点它回到预览
+        btn.textContent = '预览';
+        btn.title = '回到预览模式';
+        btn.classList.toggle('with-label', true);
     }
 
     function toggleMode() {
-        // 黑块（“预览”）只用于关闭；进入编辑请双击“定位销假”
+        // 黑块（“预览”）只用于退出编辑；进入编辑请双击“定位销假”
         if (document.body.classList.contains('edit-mode')) exitEdit();
-        else { hideNotFound(); hideModeBtn(); }
     }
 
     function handleFile(input) {
@@ -960,7 +959,7 @@
     }
 
     /* ================= 请假信息联动 =================
-       1. 选完「请假开始日期」→ 申请日期 = 开始时间 - 3 小时（跨天自动处理）
+       1. 选完「请假开始日期」→ 申请日期 = 开始时间 - 1 小时（跨天自动处理）
           申请日期本身只读，只跟请假开始时间绑定
        2. 申请日期变了 → 审核流程：
           「提交申请」时间 = 申请日期
@@ -1015,14 +1014,14 @@
         daysEl.value = days.toFixed(2);
     }
 
-    // 申请日期整体前移 3 小时（含跨月、跨年）
+    // 申请日期整体前移 1 小时（含跨月、跨年）
     function applyFromStart() {
         const startEl = $('start-time');
         const applyEl = $('apply-time');
         if (!startEl || !applyEl) return;
         const start = parseToDate(startEl.value);
         if (!start) return;
-        const applied = new Date(start.getTime() - 3 * 60 * 60 * 1000);
+        const applied = new Date(start.getTime() - 1 * 60 * 60 * 1000);
         applyEl.value = ymdhi(applied);
         syncAuditSteps();
     }
@@ -1033,7 +1032,7 @@
 
         // 申请日期已改为只读，不再参与滚轮选择
 
-        // 选完请假开始时间 → 申请时间 = 开始 - 3h，再联动审核流程
+        // 选完请假开始时间 → 申请时间 = 开始 - 1h，再联动审核流程
         if (startCell) startCell._afterPick = function () {
             applyFromStart();
             recalcLeaveDays();
@@ -1067,7 +1066,7 @@
     /* ================= 页内 404 提示 =================
        “定位销假 / 续假申请”在这个静态页面里没有对应路由，
        直接弹本页的提示层，不再跳到不存在的地址（否则会变成真 404）。
-       黑块（预览/编辑入口）与 404 提示层同时出现、同时收起。
+       黑块只在编辑态出现，404 提示层里没有黑块。
        ================================================ */
     function showNotFound(which) {
         const mask = $('nf-mask');
@@ -1079,8 +1078,7 @@
             : '定位销假功能暂未开放，请到学校请假系统内完成销假定位。';
         mask.classList.add('show');
         document.body.classList.add('picker-open');
-        // 404 出现的同时，让右下角的编辑入口黑块一起出现
-        showModeBtn();
+        // 404 提示层里不显示黑块（黑块只在编辑态出现）
     }
 
     function hideNotFound() {
@@ -1091,8 +1089,6 @@
         if (!$('picker-mask') || !$('picker-mask').classList.contains('show')) {
             document.body.classList.remove('picker-open');
         }
-        // 404 关闭时，黑块也一并收起（编辑态下黑块常驻，不收起）
-        if (!document.body.classList.contains('edit-mode')) hideModeBtn();
     }
 
     /* 黑块（编辑入口）的显示 / 隐藏 */
@@ -1125,9 +1121,10 @@
 
     /* ================= 双击“定位销假”切换 编辑/预览 =================
        默认不显示 #mode-btn；
-       - 单击“定位销假”→ 弹 404 提示层，黑块同时在右下角出现
-       - 点黑块“预览”→ 关闭 404 提示层并收起黑块，回到预览态
-       - 双击“定位销假”→ 直接进入/退出编辑（黑块随之常驻/收起）
+       - 单击“定位销假”→ 弹 404 提示层（没有黑块）
+       - 双击“定位销假”→ 进入/退出编辑；编辑态右下角出现黑块，块内文字“预览”
+       - 点黑块“预览”→ 退出编辑，回到预览态
+       双击/单击都在 pointerdown 阶段判定，避免手机上 click 事件被吞导致要点好几次。
        ============================================================== */
     const modeBtn = document.getElementById('mode-btn');
     const locateBtn = document.getElementById('locate-btn');
@@ -1167,8 +1164,10 @@
     function bindEditEntry() {
         if (!locateBtn || !modeBtn) return;
 
-        locateBtn.addEventListener('click', function (e) {
-            e.preventDefault();
+        // 核心点击处理：第一下先记时间并挂一个 700ms 的“单击确认”定时器；
+        // 第二下（600ms 内）取消定时器，直接判定为双击。
+        const handleTap = function (e) {
+            if (e) e.preventDefault();
 
             const now = Date.now();
 
@@ -1189,7 +1188,18 @@
                 // 确认是单击：弹本页 404 提示
                 showNotFound('locate');
             }, SINGLE_DELAY_MS);
-        });
+        };
+
+        // pointerdown 优先：手机上 click 可能因为聚焦/滚动预备被吞掉，
+        // 表现为“点三次才进编辑、点一次就弹 404”。pointerdown 第一时间响应。
+        if (window.PointerEvent) {
+            locateBtn.addEventListener('pointerdown', function (e) {
+                if (e.button !== undefined && e.button !== 0) return;
+                handleTap(e);
+            }, { passive: false });
+        } else {
+            locateBtn.addEventListener('click', handleTap);
+        }
 
         // 续假申请：同样弹页内 404
         const renewBtn = $('renew-btn');
@@ -1214,13 +1224,8 @@
         btn.addEventListener('click', function (e) {
             e.preventDefault();
             e.stopPropagation();
-            // 黑块只负责“关闭”：关掉 404 提示层并收起自己，回到预览态
-            if (document.body.classList.contains('edit-mode')) {
-                exitEdit();
-            } else {
-                hideNotFound();
-                hideModeBtn();
-            }
+            // 黑块只负责退出编辑；在编辑态以外它根本不会出现
+            exitEdit();
         });
     }
 
